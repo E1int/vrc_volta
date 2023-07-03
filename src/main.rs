@@ -101,7 +101,7 @@ struct BatteryLevels {
 }
 
 fn get_levels() -> Result<BatteryLevels> {
-    let headset: u8 = get_battery_dump()
+    let headset: u8 = get_battery_dump()?
         .lines()
         .find(|line| line.starts_with(LEVEL_KEY))
         .context("Failed to find headset battery level")?
@@ -109,7 +109,7 @@ fn get_levels() -> Result<BatteryLevels> {
         .parse()
         .context("Failed to detach the important thing")?;
 
-    let controllers: String = get_controller_service_dump()
+    let controllers: String = get_controller_service_dump()?
         .lines()
         .filter(|line| line.starts_with(HANDLER_KEY) || line.starts_with(BATTERY_KEY))
         .intersperse("\n")
@@ -136,26 +136,26 @@ fn get_levels() -> Result<BatteryLevels> {
     })
 }
 
-fn get_battery_dump() -> String {
-    String::from_utf8(
+fn get_battery_dump() -> Result<String> {
+    Ok(String::from_utf8(
         Command::new("adb")
             .args(["shell", "dumpsys", "battery"])
             .stderr(Stdio::null())
             .output()
-            .expect("Failed to get headset battery")
+            .context("Failed to get headset battery")?
             .stdout,
     )
-    .expect("Failed to convert headset battery output to a string")
+    .context("Failed to convert headset battery output to a string")?)
 }
 
-fn get_controller_service_dump() -> String {
-    String::from_utf8(
+fn get_controller_service_dump() -> Result<String> {
+    Ok(String::from_utf8(
         Command::new("adb")
             .args(["shell", "dumpsys", "pxrcontrollerservice"])
             .stderr(Stdio::null())
             .output()
-            .expect("Failed to get controller batteries")
+            .context("Failed to get controller batteries")?
             .stdout,
     )
-    .expect("Failed to convert controller batteries output to a string")
+    .context("Failed to convert controller batteries output to a string")?)
 }
