@@ -1,0 +1,16 @@
+[package]
+name = "battery"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.71"
+clap = { version = "4.3", features = ["derive"] }
+itertools = "0.11.0"
+lazy_static = "1.4.0"
+regex = "1.8.4"
+rosc = "0.10.1"
+tracing = "0.1.37"
+tracing-subscriber = "0.3.17"
